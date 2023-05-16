@@ -26,7 +26,7 @@ class RandomNumberGenerator:
 
 
 def knapsack_instance_generator(n):
-    generator = RandomNumberGenerator(seedValue=20)
+    generator = RandomNumberGenerator(seedValue=22)
     values = [generator.nextInt(1, 30) for _ in range(n)]
     weights = [generator.nextInt(1, 30) for _ in range(n)]
     capacity = generator.nextInt(n * 5, n * 10)

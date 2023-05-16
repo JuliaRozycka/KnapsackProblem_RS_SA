@@ -2,9 +2,10 @@ import random
 import numpy as np
 from Knapsack import Knapsack
 from CoolingFunction import CoolingFunction
+from InitialSolution import InitialSolution
 
 
-def best_of_n(knapsack: Knapsack, n) -> []:
+def generate_best_of_n_solutions(knapsack: Knapsack, n) -> []:
     """
     This function is used to get initial solution for Knapsack Problem
 
@@ -25,16 +26,33 @@ def best_of_n(knapsack: Knapsack, n) -> []:
     return best_array
 
 
-def random_search(knapsack: Knapsack, iterations):
+def generate_initial_solution(knapsack: Knapsack) -> []:
+    while True:
+        solution = [random.randint(0, 1) for i in range(knapsack.number_of_items)]
+        value, weight = calculate_value_weight(solution, knapsack)
+        if weight <= knapsack.maximum_capacity:
+            return solution
+
+
+def random_search(knapsack: Knapsack, iterations, initial_solution_mode: InitialSolution = InitialSolution.ZEROS):
     """
     This function is a simple random search metaheuristic algorithm for Knapsack Problem
 
+    :param initial_solution_mode: enum for selecting type of initial solution
     :param knapsack: object of class Knapsack
     :param iterations: maximum number of iterations that the algorithm should do to find solution
     :return: found solution for the Knapsack Problem in form of a binary array, value and weight
     """
-    # Initialize a best random binary array from a 100
-    solution = best_of_n(knapsack, 100)
+    # Initialize initial solution
+    if initial_solution_mode.value == 0:
+        solution = [0] * knapsack.number_of_items
+    elif initial_solution_mode.value == 1:
+        solution = generate_initial_solution(knapsack)
+    elif initial_solution_mode.value == 2:
+        solution = generate_best_of_n_solutions(knapsack, 100)
+    else:
+        raise ValueError("Incorrect initial solution mode")
+
     # Calculate the initial value and weight of the knapsack
     current_value, current_weight = calculate_value_weight(solution, knapsack)
 
@@ -58,16 +76,17 @@ def random_search(knapsack: Knapsack, iterations):
             solution[index] = 1 - solution[index]
 
     # Return the final knapsack as a binary array
-    return solution, "value: ", sum(np.multiply(solution, knapsack.values)), "weight: ", sum(
+    return solution, sum(np.multiply(solution, knapsack.values)), sum(
         np.multiply(solution, knapsack.weights))
 
 
 def calculate_value_weight(solution, knapsack: Knapsack):
     """
+    Functions for calculating weight and value of items in knapsack
 
-    :param solution:
-    :param knapsack:
-    :return:
+    :param solution: current solution in form of a binary array
+    :param knapsack: object from class Knapsack
+    :return: the value and weight of items
     """
     # Calculate the total value and weight of the knapsack
     value = sum(np.multiply(solution, knapsack.values))
@@ -91,12 +110,14 @@ def find_neighbour(knapsack, solution) -> []:
 
 
 def simulated_annealing(knapsack: Knapsack, iterations, initial_temperature, alpha,
-                        cooling: CoolingFunction = CoolingFunction.GEOMETRIC, final_temperature=0):
+                        cooling: CoolingFunction = CoolingFunction.GEOMETRIC,
+                        initial_solution_mode: InitialSolution = InitialSolution.FIRST, final_temperature=0):
     """
     This is a Simulated Annealing algorithm for Knapsack Problem, it is
     a metaheuristic algorithm where we can operate the parameters to find solution for this problem
     which is not always the optimal one.
 
+    :param initial_solution_mode: enum for selecting type of initial solution
     :param knapsack: Knapsack class object
     :param iterations: maximum number of iterations
     :param initial_temperature: the initial temperature for SA
@@ -107,7 +128,14 @@ def simulated_annealing(knapsack: Knapsack, iterations, initial_temperature, alp
     :return: solution for the knapsack problem, value and weight
     """
     # Get best current solution from random 100
-    current_solution = best_of_n(knapsack, 100)
+    if initial_solution_mode.value == 0:
+        current_solution = [0] * knapsack.number_of_items
+    elif initial_solution_mode.value == 1:
+        current_solution = generate_initial_solution(knapsack)
+    elif initial_solution_mode.value == 2:
+        current_solution = generate_best_of_n_solutions(knapsack, 100)
+    else:
+        raise ValueError("Incorrect initial solution mode")
 
     # Calculate value and weight for this solution
     current_value, current_weight = calculate_value_weight(current_solution, knapsack)
@@ -150,5 +178,5 @@ def simulated_annealing(knapsack: Knapsack, iterations, initial_temperature, alp
             raise ValueError("Invalid cooling mode")
         i += 1
 
-    return best_solution, "value: ", sum(np.multiply(best_solution, knapsack.values)), "weight: ", sum(
+    return best_solution, sum(np.multiply(best_solution, knapsack.values)), sum(
         np.multiply(best_solution, knapsack.weights))

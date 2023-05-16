@@ -5,6 +5,47 @@ from generator import knapsack_instance_generator
 from CoolingFunction import CoolingFunction
 
 
+
+"""
+Sąsiedztwo typu swap ma rozmiar n2. Cała przestrzeń rozwiązań jest n silnia. Wszystkie algorytmy bazują na sprawdzaniu sąseidztwa - najbardziej popularny jest swap, 
+insercja też jest, invert, reverse lub twist w przypadku komiwojażera. Jak mamy zaplątanie, jak jest przestrzeń euklidesowa to odwrócenia są dobre.
+Losowy jest dla nieskończenie wielkich instancji, jesli damy np. mneijszą liczbę iteracji. S
+Są też inne sąsiedztwa - dedukowane do różnych problemów. Wyznacza się ścieżkę krytyczną, poruszamy tylko zadania skrajne. Jest jedno rozwiązanie. Będzie istatona kalibracja parametróœ liczbowych - liczba iteracji i dedykowana do algorytmu.
+Rozwiązanie początkowe i liczb aiteracji. W Wersji rozszerzonej będą już dedykowane do algorytmu. 
+Reprezentacja rozwiązania - w dyskretnym ciąg binarny mówiący czy wchodzą czy nie wchodzą.
+
+
+1 ścieżka
+W dwuplecakowym jest np. negacja bitu. Może to prowadzić do rozwiązań niedopuszczalnych i to trzeba nadzorować.
+
+Przeszukiwanie losowe - trywialny bo mieści się w trzech korkach:
+1) startujemy z jakiegoś rozwiązania
+2) dopóki warunek stopu nie jest spełniony - wylosuj rozwiązanie x spośród sąsiadów x'
+ -jeśli f(x')<f(x) to wykonujemy x<-x'
+3) Wypisz rozwiązanie
+
+W każdej iteracji losuje jedno sąsiednie rozwiązanie - robimy jednego losowego swapa, zamieniamy i przeliczamy, akcpetujemy je tylko wtedy jeśli jest lepsze. Przez to jeśli pierwsze rozwiązanie będzie optimum 
+no to on po prostu sie na nim zatrzyma.
+
+W poszukiwaniu zstępującym przewaga jest taka, że iteracja ma dużą złożoność, jest wolniejszy ale nie ma w sobie nic losowego, jest w pełni deterministyczny. W losowym za każdym razem znajdujemy inne rozwiązanie.
+
+Rozszerzone:
+
+Symolowane wyżarzania
+
+Trzeba mieć zminna która przechowuje najlepsze dotychczasowe rozwiązanie. 
+Jest ten wzorek, jak go wpiszemy do kodu bez zrozumienia to tez będzie git.Geometryczna często sprawdza sie lepiej niż liniowa, ale można wrzucić switcha żeby to sobie sprawdzić w kodzie
+t=t-B albo t=At gdzie A to między 0.95 a 0.9999. 
+
+Temperatura początkowa to też jest do przetestowania jaką najlepiej wybrać. Największy wpły będzie miał schemat chłodzenia i jego parametr niż sama temperatura poczatkowa (chociaż jak
+bedzie na niska to też źle).
+
+
+Poszukiwanie z zakazami
+
+Schemat jest bardzo zblizony
+"""""
+
 def best_of_n(knapsack: Knapsack, n):
     best_array = []
     best_value = 0
@@ -167,4 +208,8 @@ def simulated_annealing(knapsack: Knapsack, iterations, initial_temperature, alp
 #     return best_solution, sum(np.multiply(best_solution, knapsack.values)), sum(
 #         np.multiply(best_solution, knapsack.weights))
 
+if __name__ == "__main__":
+    weights, values, maximum_capacity = knapsack_instance_generator(1)
+    knapsack = Knapsack(weights, values, maximum_capacity)
+    print(random_search(knapsack,10))
 

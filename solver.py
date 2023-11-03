@@ -1,3 +1,4 @@
+from typing import List
 import random
 import numpy as np
 from Knapsack import Knapsack
@@ -5,7 +6,7 @@ from CoolingFunction import CoolingFunction
 from InitialSolution import InitialSolution
 
 
-def generate_best_of_n_solutions(knapsack: Knapsack, n) -> []:
+def generate_best_of_n_solutions(knapsack: Knapsack, n) -> List:
     """
     This function is used to get initial solution for Knapsack Problem
 
@@ -13,7 +14,7 @@ def generate_best_of_n_solutions(knapsack: Knapsack, n) -> []:
     :param n: number of randomly selected binary arrays
     :return: best binary list from n random
     """
-    best_array = []
+    best_array: List = []
     best_value = 0
 
     for i in range(n):

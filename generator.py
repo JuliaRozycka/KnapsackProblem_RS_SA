@@ -6,7 +6,7 @@ class RandomNumberGenerator:
         self.__seed = seedValue
 
     def nextInt(self, low, high):
-        m = 2147483647
+        m = 214_748_364_7
         a = 16807
         b = 127773
         c = 2836
@@ -21,8 +21,7 @@ class RandomNumberGenerator:
     def nextFloat(self, low, high):
         low *= 100000
         high *= 100000
-        val = self.nextInt(low, high) / 100000.0
-        return val
+        return self.nextInt(low, high) / 100000.0
 
 
 def knapsack_instance_generator(n):

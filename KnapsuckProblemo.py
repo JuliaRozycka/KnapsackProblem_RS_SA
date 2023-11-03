@@ -4,8 +4,6 @@ from Knapsack import Knapsack
 from generator import knapsack_instance_generator
 from CoolingFunction import CoolingFunction
 
-
-
 """
 Sąsiedztwo typu swap ma rozmiar n2. Cała przestrzeń rozwiązań jest n silnia. Wszystkie algorytmy bazują na sprawdzaniu sąseidztwa - najbardziej popularny jest swap, 
 insercja też jest, invert, reverse lub twist w przypadku komiwojażera. Jak mamy zaplątanie, jak jest przestrzeń euklidesowa to odwrócenia są dobre.
@@ -46,6 +44,7 @@ Poszukiwanie z zakazami
 Schemat jest bardzo zblizony
 """""
 
+
 def best_of_n(knapsack: Knapsack, n):
     best_array = []
     best_value = 0
@@ -80,13 +79,13 @@ def random_search(knapsack: Knapsack, iterations):
             # If so, update the current knapsack and values
             current_value = neighbour_value
             current_weight = neighbour_weight
-
         else:
             # Otherwise, revert the change to the knapsack
             solution[index] = 1 - solution[index]
 
     # Return the final knapsack as a binary array
-    return solution, sum(np.multiply(solution, knapsack.values)), sum(np.multiply(solution, knapsack.weights))
+    return solution, sum(np.multiply(solution, knapsack.values)), sum(
+        np.multiply(solution, knapsack.weights))
 
 
 def calculate_value_weight(solution, knapsack: Knapsack):
@@ -104,8 +103,8 @@ def find_neighbour(knapsack, solution):
 
 
 def simulated_annealing(knapsack: Knapsack, iterations, initial_temperature, alpha,
-                        cooling: CoolingFunction = CoolingFunction.GEOMETRIC, final_temperature=0):
-
+                        cooling: CoolingFunction = CoolingFunction.GEOMETRIC,
+                        final_temperature=0):
     # Get best current solution from random 100
     current_solution = best_of_n(knapsack, 100)
 
@@ -123,7 +122,8 @@ def simulated_annealing(knapsack: Knapsack, iterations, initial_temperature, alp
 
         # Find neighbour solution
         neighbour_solution = find_neighbour(knapsack, current_solution)
-        neighbour_value, neighbour_weight = calculate_value_weight(neighbour_solution, knapsack)
+        neighbour_value, neighbour_weight = calculate_value_weight(neighbour_solution,
+                                                                   knapsack)
 
         # Calculate the difference between neigbour and current solution
         delta_value = neighbour_value - current_value
@@ -131,7 +131,8 @@ def simulated_annealing(knapsack: Knapsack, iterations, initial_temperature, alp
         # Check if weight is correct and if neighbour solution is better or the probability conditions is met then
         # current_solution <- neighbour_solution
         if neighbour_weight <= knapsack.maximum_capacity and (
-                delta_value > 0 or np.exp(-delta_value / initial_temperature) > random.random()):
+                delta_value > 0 or np.exp(
+            -delta_value / initial_temperature) > random.random()):
             current_solution = neighbour_solution
             current_value = neighbour_value
             current_weight = neighbour_weight
@@ -211,5 +212,4 @@ def simulated_annealing(knapsack: Knapsack, iterations, initial_temperature, alp
 if __name__ == "__main__":
     weights, values, maximum_capacity = knapsack_instance_generator(1)
     knapsack = Knapsack(weights, values, maximum_capacity)
-    print(random_search(knapsack,10))
-
+    print(random_search(knapsack, 10))

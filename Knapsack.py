@@ -7,4 +7,5 @@ class Knapsack:
 
     def __str__(self):
         return f"Weights: {self.weights}, values: {self.values}, " \
-               f" maximum capacity: {self.maximum_capacity}, number of items: {self.number_of_items}"
+               f" maximum capacity: {self.maximum_capacity}," \
+               f" number of items: {self.number_of_items}"
